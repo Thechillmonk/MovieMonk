@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import type { Metadata } from "next"
@@ -9,7 +11,6 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Navigation } from "@/components/navigation"
-import { Providers } from "@/components/providers"
 import { useWatchlist } from "@/contexts/watchlist-context"
 import {
   fetchMovieDetails,
@@ -22,7 +23,9 @@ import {
   type Video,
   fetchMovieWatchProviders,
   type WatchProvidersResponse,
+  getVidLinkMovieUrl,
 } from "@/lib/tmdb"
+import { VidLinkPlayer } from "@/components/vidlink-player"
 
 export default function MovieDetailPage() {
   const params = useParams()
@@ -66,38 +69,33 @@ export default function MovieDetailPage() {
 
   if (loading) {
     return (
-      <Providers>
-        <div className="min-h-screen bg-background">
-          <Navigation />
-          <div className="animate-pulse">
-            <div className="h-[70vh] bg-muted" />
-            <div className="container mx-auto px-4 py-8">
-              <div className="h-8 bg-muted rounded w-1/3 mb-4" />
-              <div className="h-4 bg-muted rounded w-2/3 mb-8" />
-            </div>
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="animate-pulse">
+          <div className="h-[70vh] bg-muted" />
+          <div className="container mx-auto px-4 py-8">
+            <div className="h-8 bg-muted rounded w-1/3 mb-4" />
+            <div className="h-4 bg-muted rounded w-2/3 mb-8" />
           </div>
         </div>
-      </Providers>
+      </div>
     )
   }
 
   if (!movie) {
     return (
-      <Providers>
-        <div className="min-h-screen bg-background">
-          <Navigation />
-          <div className="container mx-auto px-4 py-20 text-center">
-            <h1 className="text-3xl font-bold mb-4">Movie Not Found</h1>
-            <p className="text-muted-foreground">The movie you're looking for doesn't exist.</p>
-          </div>
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="container mx-auto px-4 py-20 text-center">
+          <h1 className="text-3xl font-bold mb-4">Movie Not Found</h1>
+          <p className="text-muted-foreground">The movie you're looking for doesn't exist.</p>
         </div>
-      </Providers>
+      </div>
     )
   }
 
   return (
-    <Providers>
-      <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
         <Navigation />
 
         {/* Hero Section */}
@@ -164,13 +162,23 @@ export default function MovieDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
-              {/* Overview */}
-              <section>
-                <h2 className="text-2xl font-bold mb-4">Overview</h2>
-                <p className="text-muted-foreground leading-relaxed">{movie.overview}</p>
-              </section>
+               {/* Overview */}
+               <section>
+                 <h2 className="text-2xl font-bold mb-4">Overview</h2>
+                 <p className="text-muted-foreground leading-relaxed">{movie.overview}</p>
+               </section>
 
-              {/* Cast */}
+               {/* Watch Now */}
+               <section>
+                 <h2 className="text-2xl font-bold mb-4">Watch Now</h2>
+                 <VidLinkPlayer
+                   title={movie.title}
+                   url={getVidLinkMovieUrl(movie.id)}
+                   type="movie"
+                 />
+               </section>
+
+               {/* Cast */}
               {credits && credits.cast.length > 0 && (
                 <section>
                   <h2 className="text-2xl font-bold mb-4">Cast</h2>
@@ -183,6 +191,10 @@ export default function MovieDetailPage() {
                               src={getImageUrl(member.profile_path)}
                               alt={member.name}
                               className="w-full h-full object-cover"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = "/placeholder-user.jpg";
+                              }}
                             />
                           </div>
                           <div className="p-3">
@@ -315,6 +327,5 @@ export default function MovieDetailPage() {
           </div>
         </div>
       </div>
-    </Providers>
   )
 }

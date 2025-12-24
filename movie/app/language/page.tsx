@@ -1,3 +1,5 @@
+"use client"
+
 import { Providers } from "@/components/providers"
 import { Navigation } from "@/components/navigation"
 import { AdvancedFilters, type FilterOptions } from "@/components/advanced-filters"

@@ -5,17 +5,17 @@ const TMDB_BASE_URL = "https://api.themoviedb.org/3"
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string; seasonNumber: string; episodeNumber: string }> }
 ) {
   if (!TMDB_API_KEY) {
     return NextResponse.json({ error: "TMDB API key not configured" }, { status: 500 })
   }
 
-  const { id } = await params
+  const { id, seasonNumber, episodeNumber } = await params
 
   try {
     const response = await fetch(
-      `${TMDB_BASE_URL}/movie/${id}?api_key=${TMDB_API_KEY}`
+      `${TMDB_BASE_URL}/tv/${id}/season/${seasonNumber}/episode/${episodeNumber}?api_key=${TMDB_API_KEY}`
     )
 
     if (!response.ok) {
@@ -25,7 +25,7 @@ export async function GET(
     const data = await response.json()
     return NextResponse.json(data)
   } catch (error) {
-    console.error("Error fetching movie details:", error)
-    return NextResponse.json({ error: "Failed to fetch movie details" }, { status: 500 })
+    console.error("Error fetching TV show episode:", error)
+    return NextResponse.json({ error: "Failed to fetch TV show episode" }, { status: 500 })
   }
 }

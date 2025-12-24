@@ -5,15 +5,17 @@ const TMDB_BASE_URL = "https://api.themoviedb.org/3"
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   if (!TMDB_API_KEY) {
     return NextResponse.json({ error: "TMDB API key not configured" }, { status: 500 })
   }
 
+  const { id } = await params
+
   try {
     const response = await fetch(
-      `${TMDB_BASE_URL}/tv/${params.id}/credits?api_key=${TMDB_API_KEY}`
+      `${TMDB_BASE_URL}/tv/${id}/credits?api_key=${TMDB_API_KEY}`
     )
 
     if (!response.ok) {

@@ -30,12 +30,12 @@ const TV_GENRES = [
   { id: 37, name: "Western" },
 ]
 
-export function TVBrowser() {
-  const [tvShows, setTVShows] = useState<TVShow[]>([])
+export function TVBrowser({ initialCategory = "popular" }: { initialCategory?: string }) {
+  const [shows, setShows] = useState<TVShow[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
-  const [currentCategory, setCurrentCategory] = useState<string>("popular")
+  const [currentCategory, setCurrentCategory] = useState<string>(initialCategory)
   const [filters, setFilters] = useState<FilterOptions>({
     yearRange: [1900, new Date().getFullYear() + 2],
     ratingRange: [0, 10],
@@ -113,7 +113,7 @@ export function TVBrowser() {
           break
       }
 
-      setTVShows(filteredShows)
+      setShows(filteredShows)
     } catch (error) {
       console.error("Error loading TV shows:", error)
     } finally {
@@ -174,7 +174,7 @@ export function TVBrowser() {
         {/* View Controls */}
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
-            {loading ? "Loading..." : `${tvShows.length} TV shows found`}
+            {loading ? "Loading..." : `${shows.length} TV shows found`}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -215,7 +215,7 @@ export function TVBrowser() {
       {/* TV Shows Grid */}
       {!loading && viewMode === "grid" && (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-          {tvShows.map((show) => (
+          {shows.map((show) => (
             <Card key={show.id} className="bg-card hover:bg-accent/50 transition-colors cursor-pointer group">
               <CardContent className="p-0">
                 <div className="relative aspect-[2/3] overflow-hidden rounded-t-lg">
@@ -267,7 +267,7 @@ export function TVBrowser() {
       {/* TV Shows List */}
       {!loading && viewMode === "list" && (
         <div className="space-y-4">
-          {tvShows.map((show) => (
+          {shows.map((show) => (
             <Card key={show.id} className="bg-card hover:bg-accent/50 transition-colors cursor-pointer">
               <CardContent className="p-6">
                 <div className="flex gap-6">
@@ -333,7 +333,7 @@ export function TVBrowser() {
       )}
 
       {/* Empty State */}
-      {!loading && tvShows.length === 0 && (
+      {!loading && shows.length === 0 && (
         <div className="text-center py-12">
           <div className="text-6xl mb-4">📺</div>
           <h3 className="text-xl font-semibold text-foreground mb-2">No TV shows found</h3>

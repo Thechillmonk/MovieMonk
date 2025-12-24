@@ -193,6 +193,32 @@ export interface TVShowDetails extends TVShow {
   tagline: string
   status: string
   created_by: { id: number; name: string }[]
+  seasons: Season[]
+}
+
+export interface Season {
+  id: number
+  name: string
+  overview: string
+  poster_path: string | null
+  season_number: number
+  episode_count: number
+  air_date: string
+}
+
+export interface Episode {
+  id: number
+  name: string
+  overview: string
+  episode_number: number
+  season_number: number
+  still_path: string | null
+  air_date: string
+  runtime: number
+  vote_average: number
+  vote_count: number
+  crew: CrewMember[]
+  guest_stars: CastMember[]
 }
 
 export async function fetchMovieDetails(id: number): Promise<MovieDetails | null> {
@@ -282,5 +308,111 @@ export async function fetchTVShowWatchProviders(id: number): Promise<WatchProvid
   } catch (error) {
     console.error("Error fetching TV show watch providers:", error)
     return null
+  }
+}
+
+export async function fetchTVShowSeason(id: number, seasonNumber: number): Promise<Season | null> {
+  try {
+    const response = await fetch(`/api/tmdb/tv/${id}/season/${seasonNumber}`)
+    if (!response.ok) throw new Error(`API error: ${response.status}`)
+    return await response.json()
+  } catch (error) {
+    console.error("Error fetching TV show season:", error)
+    return null
+  }
+}
+
+export async function fetchTVShowEpisode(id: number, seasonNumber: number, episodeNumber: number): Promise<Episode | null> {
+  try {
+    const response = await fetch(`/api/tmdb/tv/${id}/season/${seasonNumber}/episode/${episodeNumber}`)
+    if (!response.ok) throw new Error(`API error: ${response.status}`)
+    return await response.json()
+  } catch (error) {
+    console.error("Error fetching TV show episode:", error)
+    return null
+  }
+}
+
+export function getVidLinkMovieUrl(tmdbId: number, options?: {
+  primaryColor?: string
+  secondaryColor?: string
+  iconColor?: string
+  icons?: 'vid' | 'default'
+  title?: boolean
+  poster?: boolean
+  autoplay?: boolean
+  nextbutton?: boolean
+  player?: 'jw' | 'default'
+  startAt?: number
+  sub_file?: string
+  sub_label?: string
+}): string {
+  const baseUrl = `https://vidlink.pro/movie/${tmdbId}`
+  const params = new URLSearchParams()
+
+  if (options?.primaryColor) params.append('primaryColor', options.primaryColor.replace('#', ''))
+  if (options?.secondaryColor) params.append('secondaryColor', options.secondaryColor.replace('#', ''))
+  if (options?.iconColor) params.append('iconColor', options.iconColor.replace('#', ''))
+  if (options?.icons) params.append('icons', options.icons)
+  if (options?.title !== undefined) params.append('title', options.title.toString())
+  if (options?.poster !== undefined) params.append('poster', options.poster.toString())
+  if (options?.autoplay !== undefined) params.append('autoplay', options.autoplay.toString())
+  if (options?.nextbutton !== undefined) params.append('nextbutton', options.nextbutton.toString())
+  if (options?.player) params.append('player', options.player)
+  if (options?.startAt) params.append('startAt', options.startAt.toString())
+  if (options?.sub_file) params.append('sub_file', options.sub_file)
+  if (options?.sub_label) params.append('sub_label', options.sub_label)
+
+  const queryString = params.toString()
+  return queryString ? `${baseUrl}?${queryString}` : baseUrl
+}
+
+export function getVidLinkTVUrl(tmdbId: number, season: number, episode: number, options?: {
+  primaryColor?: string
+  secondaryColor?: string
+  iconColor?: string
+  icons?: 'vid' | 'default'
+  title?: boolean
+  poster?: boolean
+  autoplay?: boolean
+  nextbutton?: boolean
+  player?: 'jw' | 'default'
+  startAt?: number
+  sub_file?: string
+  sub_label?: string
+}): string {
+  const baseUrl = `https://vidlink.pro/tv/${tmdbId}/${season}/${episode}`
+  const params = new URLSearchParams()
+
+  if (options?.primaryColor) params.append('primaryColor', options.primaryColor.replace('#', ''))
+  if (options?.secondaryColor) params.append('secondaryColor', options.secondaryColor.replace('#', ''))
+  if (options?.iconColor) params.append('iconColor', options.iconColor.replace('#', ''))
+  if (options?.icons) params.append('icons', options.icons)
+  if (options?.title !== undefined) params.append('title', options.title.toString())
+  if (options?.poster !== undefined) params.append('poster', options.poster.toString())
+  if (options?.autoplay !== undefined) params.append('autoplay', options.autoplay.toString())
+  if (options?.nextbutton !== undefined) params.append('nextbutton', options.nextbutton.toString())
+  if (options?.player) params.append('player', options.player)
+  if (options?.startAt) params.append('startAt', options.startAt.toString())
+  if (options?.sub_file) params.append('sub_file', options.sub_file)
+  if (options?.sub_label) params.append('sub_label', options.sub_label)
+
+  const queryString = params.toString()
+  return queryString ? `${baseUrl}?${queryString}` : baseUrl
+}
+
+export async function fetchMovieRecommendations(id: number, page = 1): Promise<TMDBResponse<Movie>> {
+  try {
+    const response = await fetch(`/api/tmdb/movies/${id}/recommendations?page=${page}`)
+    if (!response.ok) throw new Error(`API error: ${response.status}`)
+    return await response.json()
+  } catch (error) {
+    console.error("Error fetching movie recommendations:", error)
+    return {
+      page: 1,
+      results: [],
+      total_pages: 1,
+      total_results: 0,
+    }
   }
 }

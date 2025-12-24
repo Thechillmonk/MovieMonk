@@ -74,24 +74,29 @@ export function Navigation() {
             </Link>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Link href="/categories">
-                  <Button
-                    asChild={false}
-                    variant="ghost"
-                    className="text-foreground hover:text-primary"
-                  >
-                    <span className="inline-flex items-center">
-                      <Star className="h-4 w-4 mr-2" />
-                      Categories
-                    </span>
-                  </Button>
-                </Link>
+                <Button
+                  variant="ghost"
+                  className="text-foreground hover:text-primary"
+                >
+                  <span className="inline-flex items-center">
+                    <Star className="h-4 w-4 mr-2" />
+                    Categories
+                  </span>
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem>Popular</DropdownMenuItem>
-                <DropdownMenuItem>Top Rated</DropdownMenuItem>
-                <DropdownMenuItem>Now Playing</DropdownMenuItem>
-                <DropdownMenuItem>Upcoming</DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/categories?category=popular">Popular</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/categories?category=top_rated">Top Rated</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/categories?category=now_playing">Now Playing</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/categories?category=upcoming">Upcoming</Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <DropdownMenu>

@@ -1,3 +1,6 @@
+"use client"
+
+import { useSearchParams } from "next/navigation"
 import { Providers } from "@/components/providers"
 import { Navigation } from "@/components/navigation"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
@@ -5,6 +8,9 @@ import { MovieBrowser } from "@/components/movie-browser"
 import { TVBrowser } from "@/components/tv-browser"
 
 export default function CategoriesPage() {
+  const searchParams = useSearchParams()
+  const category = searchParams.get("category") || "popular"
+
   return (
     <Providers>
       <div className="min-h-screen bg-background">
@@ -21,10 +27,10 @@ export default function CategoriesPage() {
               <TabsTrigger value="tv">TV Shows</TabsTrigger>
             </TabsList>
             <TabsContent value="movies" className="pt-6">
-              <MovieBrowser />
+              <MovieBrowser initialCategory={category} />
             </TabsContent>
             <TabsContent value="tv" className="pt-6">
-              <TVBrowser />
+              <TVBrowser initialCategory={category} />
             </TabsContent>
           </Tabs>
         </div>

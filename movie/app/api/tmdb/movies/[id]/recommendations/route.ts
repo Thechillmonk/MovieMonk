@@ -15,7 +15,7 @@ export async function GET(
 
   try {
     const response = await fetch(
-      `${TMDB_BASE_URL}/movie/${id}?api_key=${TMDB_API_KEY}`
+      `${TMDB_BASE_URL}/movie/${id}/recommendations?api_key=${TMDB_API_KEY}&page=1`
     )
 
     if (!response.ok) {
@@ -25,7 +25,7 @@ export async function GET(
     const data = await response.json()
     return NextResponse.json(data)
   } catch (error) {
-    console.error("Error fetching movie details:", error)
-    return NextResponse.json({ error: "Failed to fetch movie details" }, { status: 500 })
+    console.error("Error fetching movie recommendations:", error)
+    return NextResponse.json({ error: "Failed to fetch movie recommendations" }, { status: 500 })
   }
 }

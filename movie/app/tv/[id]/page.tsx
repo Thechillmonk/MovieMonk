@@ -1,5 +1,7 @@
 "use client"
 
+"use client"
+
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { Play, Heart, Star, Calendar, Tv } from "lucide-react"
@@ -8,7 +10,6 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Navigation } from "@/components/navigation"
-import { Providers } from "@/components/providers"
 import { useWatchlist } from "@/contexts/watchlist-context"
 import {
   fetchTVShowDetails,
@@ -22,6 +23,7 @@ import {
   fetchTVShowWatchProviders,
   type WatchProvidersResponse,
 } from "@/lib/tmdb"
+import { EpisodeSelector } from "@/components/episode-selector"
 
 export default function TVShowDetailPage() {
   const params = useParams()
@@ -65,38 +67,33 @@ export default function TVShowDetailPage() {
 
   if (loading) {
     return (
-      <Providers>
-        <div className="min-h-screen bg-background">
-          <Navigation />
-          <div className="animate-pulse">
-            <div className="h-[70vh] bg-muted" />
-            <div className="container mx-auto px-4 py-8">
-              <div className="h-8 bg-muted rounded w-1/3 mb-4" />
-              <div className="h-4 bg-muted rounded w-2/3 mb-8" />
-            </div>
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="animate-pulse">
+          <div className="h-[70vh] bg-muted" />
+          <div className="container mx-auto px-4 py-8">
+            <div className="h-8 bg-muted rounded w-1/3 mb-4" />
+            <div className="h-4 bg-muted rounded w-2/3 mb-8" />
           </div>
         </div>
-      </Providers>
+      </div>
     )
   }
 
   if (!show) {
     return (
-      <Providers>
-        <div className="min-h-screen bg-background">
-          <Navigation />
-          <div className="container mx-auto px-4 py-20 text-center">
-            <h1 className="text-3xl font-bold mb-4">TV Show Not Found</h1>
-            <p className="text-muted-foreground">The TV show you're looking for doesn't exist.</p>
-          </div>
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="container mx-auto px-4 py-20 text-center">
+          <h1 className="text-3xl font-bold mb-4">TV Show Not Found</h1>
+          <p className="text-muted-foreground">The TV show you're looking for doesn't exist.</p>
         </div>
-      </Providers>
+      </div>
     )
   }
 
   return (
-    <Providers>
-      <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
         <Navigation />
 
         {/* Hero Section */}
@@ -163,13 +160,20 @@ export default function TVShowDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
-              {/* Overview */}
-              <section>
-                <h2 className="text-2xl font-bold mb-4">Overview</h2>
-                <p className="text-muted-foreground leading-relaxed">{show.overview}</p>
-              </section>
+               {/* Overview */}
+               <section>
+                 <h2 className="text-2xl font-bold mb-4">Overview</h2>
+                 <p className="text-muted-foreground leading-relaxed">{show.overview}</p>
+               </section>
 
-              {/* Cast */}
+               {/* Episodes */}
+               {show.seasons && show.seasons.length > 0 && (
+                 <section>
+                   <EpisodeSelector showId={id} seasons={show.seasons} />
+                 </section>
+               )}
+
+               {/* Cast */}
               {credits && credits.cast.length > 0 && (
                 <section>
                   <h2 className="text-2xl font-bold mb-4">Cast</h2>
@@ -316,6 +320,5 @@ export default function TVShowDetailPage() {
           </div>
         </div>
       </div>
-    </Providers>
   )
 }

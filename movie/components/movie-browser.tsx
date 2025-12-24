@@ -34,12 +34,12 @@ const GENRES = [
   { id: 37, name: "Western" },
 ]
 
-export function MovieBrowser() {
+export function MovieBrowser({ initialCategory = "popular" }: { initialCategory?: string }) {
   const [movies, setMovies] = useState<Movie[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
-  const [currentCategory, setCurrentCategory] = useState<string>("popular")
+  const [currentCategory, setCurrentCategory] = useState<string>(initialCategory)
   const [filters, setFilters] = useState<FilterOptions>({
     yearRange: [1900, new Date().getFullYear() + 2],
     ratingRange: [0, 10],
