@@ -16,7 +16,7 @@
   --card-foreground: oklch(0.95 0.01 60);
   --popover: oklch(0.12 0.02 240);
   --popover-foreground: oklch(0.95 0.01 60);
-  --primary: oklch(0.65 0.25 25);
+  --primary: oklch(0.80 0.20 75);
   --primary-foreground: oklch(0.98 0.01 60);
   --secondary: oklch(0.18 0.02 240);
   --secondary-foreground: oklch(0.95 0.01 60);
@@ -28,8 +28,8 @@
   --destructive-foreground: oklch(0.98 0.01 60);
   --border: oklch(0.25 0.02 240);
   --input: oklch(0.25 0.02 240);
-  --ring: oklch(0.65 0.25 25);
-  --chart-1: oklch(0.65 0.25 25);
+  --ring: oklch(0.80 0.20 75);
+  --chart-1: oklch(0.80 0.20 75);
   --chart-2: oklch(0.6 0.2 200);
   --chart-3: oklch(0.7 0.15 120);
   --chart-4: oklch(0.75 0.2 300);
@@ -37,12 +37,12 @@
   --radius: 0.75rem;
   --sidebar: oklch(0.1 0.02 240);
   --sidebar-foreground: oklch(0.95 0.01 60);
-  --sidebar-primary: oklch(0.65 0.25 25);
+  --sidebar-primary: oklch(0.80 0.20 75);
   --sidebar-primary-foreground: oklch(0.98 0.01 60);
   --sidebar-accent: oklch(0.18 0.02 240);
   --sidebar-accent-foreground: oklch(0.95 0.01 60);
   --sidebar-border: oklch(0.25 0.02 240);
-  --sidebar-ring: oklch(0.65 0.25 25);
+  --sidebar-ring: oklch(0.80 0.20 75);
 }
 
 /* Cyberpunk Theme */

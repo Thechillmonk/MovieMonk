@@ -25,6 +25,7 @@ interface VidLinkPlayerProps {
 export function VidLinkPlayer({ title, url, type, episodeInfo, className = "" }: VidLinkPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [customizeOpen, setCustomizeOpen] = useState(false)
+  const [subtitlesEnabled, setSubtitlesEnabled] = useState(true)
   const [playerOptions, setPlayerOptions] = useState({
     primaryColor: '#B20710',
     secondaryColor: '#170000',
@@ -32,12 +33,14 @@ export function VidLinkPlayer({ title, url, type, episodeInfo, className = "" }:
     icons: 'default' as 'vid' | 'default',
     title: true,
     poster: true,
-    autoplay: false,
+    autoplay: true,
     nextbutton: type === 'tv',
     player: 'default' as 'jw' | 'default',
     startAt: 0,
     sub_file: '',
-    sub_label: ''
+    sub_label: '',
+    autoPlay: true,
+    autoWatch: true
   })
 
   const getCurrentUrl = () => {
@@ -47,7 +50,19 @@ export function VidLinkPlayer({ title, url, type, episodeInfo, className = "" }:
       secondaryColor: playerOptions.secondaryColor.replace('#', ''),
       iconColor: playerOptions.iconColor.replace('#', ''),
     }
-    return url.includes('?') ? url : `${url}?${new URLSearchParams(options as any).toString()}`
+
+    const params = new URLSearchParams()
+    for (const [key, value] of Object.entries(options)) {
+      if (value !== undefined && value !== null && value !== '') {
+        params.append(key, String(value))
+      }
+    }
+
+    return url.includes('?') ? url : `${url}?${params.toString()}`
+  }
+
+  const toggleSubtitles = () => {
+    setSubtitlesEnabled(prev => !prev)
   }
 
   const openExternal = () => {
@@ -205,6 +220,28 @@ export function VidLinkPlayer({ title, url, type, episodeInfo, className = "" }:
                         />
                         <Label htmlFor="nextbutton">Next Episode</Label>
                       </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          id="autoPlay"
+                          checked={playerOptions.autoPlay}
+                          onCheckedChange={(checked) =>
+                            setPlayerOptions(prev => ({ ...prev, autoPlay: checked }))
+                          }
+                        />
+                        <Label htmlFor="autoPlay">Auto Play</Label>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          id="autoWatch"
+                          checked={playerOptions.autoWatch}
+                          onCheckedChange={(checked) =>
+                            setPlayerOptions(prev => ({ ...prev, autoWatch: checked }))
+                          }
+                        />
+                        <Label htmlFor="autoWatch">Auto Watch</Label>
+                      </div>
                     </div>
 
                     <div>
@@ -227,6 +264,7 @@ export function VidLinkPlayer({ title, url, type, episodeInfo, className = "" }:
                         onChange={(e) => setPlayerOptions(prev => ({ ...prev, sub_file: e.target.value }))}
                         placeholder="https://example.com/subtitles.vtt"
                       />
+                      <p className="text-xs text-muted-foreground mt-1">Leave empty to use VidLink built-in subtitles</p>
                     </div>
 
                     <div>
@@ -266,6 +304,13 @@ export function VidLinkPlayer({ title, url, type, episodeInfo, className = "" }:
           <div className="flex gap-2">
             <Button
               size="sm"
+              variant={subtitlesEnabled ? "default" : "outline"}
+              onClick={toggleSubtitles}
+            >
+              CC
+            </Button>
+            <Button
+              size="sm"
               variant="outline"
               onClick={() => setIsPlaying(false)}
             >
@@ -285,6 +330,7 @@ export function VidLinkPlayer({ title, url, type, episodeInfo, className = "" }:
       <CardContent>
         <div className="aspect-video w-full">
           <iframe
+            key={`${getCurrentUrl()}-${subtitlesEnabled}`}
             src={getCurrentUrl()}
             className="w-full h-full rounded-lg border-0"
             allowFullScreen
