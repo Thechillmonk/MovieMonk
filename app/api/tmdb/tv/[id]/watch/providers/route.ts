@@ -14,7 +14,7 @@ export async function GET(
   const { id } = await params
 
   try {
-    const res = await fetch(`${TMDB_BASE_URL}/tv/${id}/watch/providers`, { headers: { "Authorization": `Bearer ${TMDB_API_KEY}` } })
+    const res = await fetch(`${TMDB_BASE_URL}/tv/${id}/watch/providers?api_key=${TMDB_API_KEY}`)
     if (!res.ok) throw new Error(`TMDB API error: ${res.status}`)
     const data = await res.json()
     return NextResponse.json(data)

@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    const response = await fetch(`${TMDB_BASE_URL}${endpoint}`, { headers: { "Authorization": `Bearer ${TMDB_API_KEY}` } })
+    const response = await fetch(`${TMDB_BASE_URL}${endpoint}&api_key=${TMDB_API_KEY}`)
 
     if (!response.ok) {
       throw new Error(`TMDB API error: ${response.status}`)

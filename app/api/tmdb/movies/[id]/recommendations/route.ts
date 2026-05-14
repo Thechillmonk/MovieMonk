@@ -15,8 +15,7 @@ export async function GET(
 
   try {
     const response = await fetch(
-      `${TMDB_BASE_URL}/movie/${id}/recommendations?page=1`,
-      { headers: { "Authorization": `Bearer ${TMDB_API_KEY}` } }
+      `${TMDB_BASE_URL}/movie/${id}/recommendations?page=1&api_key=${TMDB_API_KEY}`
     )
 
     if (!response.ok) {
